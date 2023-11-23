@@ -1,6 +1,6 @@
 plugins {
     id 'java-library'
-    id 'io.qameta.allure' version '2.10.0'
+    id 'io.qameta.allure' version '2.11.2'
     id "io.freefair.lombok" version "6.0.0-m2"
 }
 
@@ -9,7 +9,7 @@ repositories {
 }
 
 def restAssuredVersion = "5.3.0",
-    allureVersion = "2.20.1",
+    allureVersion = "2.23.0",
     jacksonDatabindVersion = "2.14.1",
     junitVersion = "5.9.1",
     slf4jVersion = "2.0.6"
