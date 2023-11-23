@@ -1,0 +1,18 @@
+{
+  "base": {
+    "project": "steam_ui",
+    "environment": "test result",
+    "comment": "allure report test",
+    "reportLink": "",
+    "language": "en",
+    "allureFolder": "build/reports/allure-report/allureReport/",
+    "enableChart": true,
+    "logo": "logo.png",
+    "durationFormat": "HH:mm:ss.SSS"
+  },
+  "telegram": {
+    "token": "6345745792:AAGf_QnqjC1KLY-McUN_Cm6YZMlkw7Mdr3s",
+    "chat": "705826893",
+    "replyTo": ""
+  }
+}
