@@ -2,8 +2,8 @@ package in.reqres.tests;
 
 import in.reqres.models.CreateUserRequest;
 import in.reqres.models.CreateUserResponse;
-import in.reqres.models.RegisterUser;
-import in.reqres.models.Users;
+import in.reqres.models.RegisterUserRequest;
+import in.reqres.models.UsersResponse;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Story;
@@ -11,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import static in.reqres.specs.SpecsReqres.request;
 import static in.reqres.specs.SpecsReqres.responseSpec;
@@ -27,12 +29,12 @@ public class ReqresInTests {
     @Test
     @DisplayName("Получение списка пользователей")
     void getUserListWithLombok() {
-        Users data = given().spec(request)
+        UsersResponse data = given().spec(request)
                 .when()
                 .get("/users?page=2")
                 .then()
                 .log().body()
-                .extract().as(Users.class);
+                .extract().as(UsersResponse.class);
     }
 
     @Test
@@ -45,13 +47,13 @@ public class ReqresInTests {
                 .then()
                 .statusCode(404);
     }
-
-    @Test
+    @CsvFileSource(resources = "/users_data.csv")
+    @ParameterizedTest
     @DisplayName("Создание пользователя")
-    void createUserLombok() {
+    void createUserLombok(String name, String job) {
         CreateUserRequest body = new CreateUserRequest();
-        body.setName("Aydar");
-        body.setJob("student");
+        body.setName(name);
+        body.setJob(job);
 
         CreateUserResponse response = given().spec(request)
                 .body(body)
@@ -89,7 +91,7 @@ public class ReqresInTests {
     @Test
     @DisplayName("Регистрация пользователя")
     void registerSuccessfulLombok() {
-        RegisterUser body = new RegisterUser();
+        RegisterUserRequest body = new RegisterUserRequest();
         body.setEmail("eve.holt@reqres.in");
         body.setPassword("qwerty");
 
@@ -105,19 +107,20 @@ public class ReqresInTests {
         assertEquals("QpwL5tke4Pnpja7X4", response.getToken());
     }
 
-    @Test
+    @CsvFileSource(resources = "/users_id_and_mail.csv")
+    @ParameterizedTest
     @DisplayName("Проверка id и email пользователя")
-    void checkIdAndEmailOfFeaturedUser() {
-        Users userResponse = given().spec(request)
+    void checkIdAndEmailOfFeaturedUser(Integer id, String email) {
+        UsersResponse userResponse = given().spec(request)
                 .when()
-                .pathParam("id", "2")
+                .pathParam("id", id)
                 .get("/users/{id}")
                 .then()
                 .spec(responseSpec)
-                .extract().jsonPath().getObject("data", Users.class);
+                .extract().jsonPath().getObject("data", UsersResponse.class);
 
-        assertEquals(2, userResponse.getId());
-        assertTrue(userResponse.getEmail().endsWith("@reqres.in"));
+        assertEquals(id, userResponse.getId());
+        assertTrue(userResponse.getEmail().equals(email));
     }
 
     @Test
